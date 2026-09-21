@@ -1,0 +1,92 @@
+import { BrevoClient } from "@getbrevo/brevo";
+
+const brevo = new BrevoClient({
+  apiKey: process.env.BREVO_API_KEY,
+});
+
+export const sendVerificationEmail = async (email, code) => {
+  const response = await brevo.transactionalEmails.sendTransacEmail({
+    sender: {
+      name: "SignalHive",
+      email: process.env.BREVO_SENDER_EMAIL,
+    },
+
+    to: [
+      {
+        email,
+      },
+    ],
+
+    subject: "Verify your SignalHive email",
+
+    textContent: `Your SignalHive verification code is ${code}. This code expires in 10 minutes.`,
+
+    htmlContent: `
+      <div style="
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        color: #1f2937;
+      ">
+
+        <h2 style="
+          color: #15803d;
+          margin-bottom: 24px;
+        ">
+          Verify your SignalHive email
+        </h2>
+
+        <p>
+          Thank you for creating an account with SignalHive.
+        </p>
+
+        <p>
+          Please use the verification code below to verify your email address:
+        </p>
+
+        <div style="
+          margin: 30px 0;
+          padding: 20px;
+          background: #f0fdf4;
+          border-radius: 12px;
+          text-align: center;
+        ">
+          <h1 style="
+            letter-spacing: 8px;
+            font-size: 32px;
+            margin: 0;
+            color: #15803d;
+          ">
+            ${code}
+          </h1>
+        </div>
+
+        <p>
+          This code expires in <strong>10 minutes</strong>.
+        </p>
+
+        <p style="
+          margin-top: 30px;
+          color: #6b7280;
+          font-size: 14px;
+        ">
+          If you did not create this account, you can safely ignore this email.
+        </p>
+
+        <p style="
+          margin-top: 30px;
+          color: #9ca3af;
+          font-size: 12px;
+        ">
+          © ${new Date().getFullYear()} SignalHive
+        </p>
+
+      </div>
+    `,
+  });
+
+  console.log("Verification email sent:", response.messageId);
+
+  return response;
+};

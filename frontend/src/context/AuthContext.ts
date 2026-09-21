@@ -1,0 +1,27 @@
+import { createContext } from "react";
+
+export type User = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+};
+
+export type RegisterData = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+};
+
+type AuthContextType = {
+  currentUser: User | null;
+  register: (data: RegisterData) => Promise<void>;
+  verifyEmail: (email: string, code: string) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+};
+
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);

@@ -1,6 +1,41 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const Register = () => {
+  const { register, loading, error } = useAuth();
+
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [terms, setTerms] = useState(false);
+  const navigate = useNavigate()
+ async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
+
+  e.preventDefault();
+
+  if (!terms) {
+    alert('You must chext all terms and conditions')
+    return;
+  }
+
+  try {
+    await register({
+      firstname,
+      lastname,
+      email,
+      password,
+    });
+
+    navigate("/verify-email", {
+      state: { email },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-md items-center justify-center">
@@ -22,20 +57,41 @@ const Register = () => {
 
           {/* Form Card */}
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl shadow-black/20">
-            <form className="space-y-5">
-              {/* Full Name */}
+            <form className="space-y-5" onSubmit={handleRegister}>
+              {/* First Name */}
               <div>
                 <label
-                  htmlFor="name"
+                  htmlFor="firstname"
                   className="mb-2 block text-sm font-medium text-slate-300"
                 >
-                  Full name
+                  First Name
                 </label>
 
                 <input
-                  id="name"
+                  id="firstname"
                   type="text"
-                  placeholder="Enter your full name"
+                  value={firstname}
+                  onChange={(e) => setFirstname(e.target.value)}
+                  placeholder="Enter your first name"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20"
+                />
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label
+                  htmlFor="lastname"
+                  className="mb-2 block text-sm font-medium text-slate-300"
+                >
+                  Last name
+                </label>
+
+                <input
+                  id="lastname"
+                  type="text"
+                  value={lastname}
+                  onChange={(e) => setLastname(e.target.value)}
+                  placeholder="Enter your lastname"
                   className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20"
                 />
               </div>
@@ -52,6 +108,8 @@ const Register = () => {
                 <input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20"
                 />
@@ -69,6 +127,8 @@ const Register = () => {
                 <input
                   id="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create a password"
                   className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20"
                 />
@@ -83,6 +143,8 @@ const Register = () => {
                 <input
                   id="terms"
                   type="checkbox"
+                  checked={terms}
+                  onChange={(e) => setTerms(e.target.checked)}
                   className="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-950 accent-slate-500"
                 />
 
@@ -108,12 +170,20 @@ const Register = () => {
                 </label>
               </div>
 
+              {/* Error */}
+              {error && (
+                <p className="text-sm text-red-400">
+                  {error}
+                </p>
+              )}
+
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white active:scale-[0.99]"
+                disabled={loading}
+                className="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Create account
+                {loading ? "Creating account..." : "Create account"}
               </button>
             </form>
 

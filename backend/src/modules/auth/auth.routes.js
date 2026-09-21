@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { Login, regiter } from "./auth.controller.js";
+import { emailValidation, getCurrentUser, Login, register,} from "./auth.controller.js";
+import { authenticateToken } from "../../middleware/auth.middleware.js";
 
 const authRoutes = Router();
-authRoutes.post('/register', regiter)
+authRoutes.post('/register', register)
 authRoutes.post('/login', Login)
-
+authRoutes.post('/me',authenticateToken ,getCurrentUser)
+authRoutes.post("/verify-email", emailValidation);
 export default authRoutes

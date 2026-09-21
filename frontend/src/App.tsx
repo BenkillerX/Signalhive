@@ -7,6 +7,8 @@ import FAQ from "./components/landing/FAQ"
 import LiveSignals from "./components/landing/LiveSignals"
 import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
+import Dashboard from "./pages/user/Dashboard"
+import VerifyEmail from "./pages/auth/VerifyEmail"
 
 function App() {
 
@@ -23,6 +25,8 @@ function App() {
         </Route>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
+        <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/verify-email" element={<VerifyEmail/>}/>
    </Routes>
     
     </>
