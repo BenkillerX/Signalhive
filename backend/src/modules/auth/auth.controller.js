@@ -27,8 +27,7 @@ export async function register(req, res) {
 
         // Generate verification code
         const verificationCode = generateVerificationCode();
-        const hashedVerificationCode =
-            hashVerificationCode(verificationCode);
+        const hashedVerificationCode =hashVerificationCode(verificationCode);
 
         // Code expires in 10 minutes
         const verificationExpires = new Date(
@@ -148,10 +147,7 @@ export const emailValidation = async (req, res) => {
             });
         }
 
-        if (
-            !user.emailVerificationExpires ||
-            user.emailVerificationExpires < new Date()
-        ) {
+        if (!user.emailVerificationExpires ||user.emailVerificationExpires < new Date()) {
             return res.status(400).json({
                 message: "Verification code has expired.",
             });

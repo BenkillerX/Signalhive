@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import api from "../services/api";
 import axios from "axios";
 import {
@@ -10,6 +10,29 @@ import {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+  const getCurrentUser = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await api.get("/api/auth/me");
+
+      setCurrentUser(response.data.user);
+    } catch (error) {
+      localStorage.removeItem("token");
+      setCurrentUser(null);
+      console.log(error);
+      
+    }
+  };
+
+  getCurrentUser();
+}, []);
+
   const [error, setError] = useState<string | null>(null);
 
   const register = async (data: RegisterData) => {
@@ -64,7 +87,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }
 };
+const login = async (email: string, password: string) => {
+  setLoading(true);
+  setError(null);
 
+  try {
+    const response = await api.post("/api/auth/login", {
+      email,
+      password,
+    });
+
+    const { token, user } = response.data;
+
+    localStorage.setItem("token", token);
+
+    setCurrentUser(user);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      setError(
+        error.response?.data?.message ||
+          "Invalid email or password."
+      );
+    } else {
+      setError("Something went wrong.");
+    }
+
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+};
+
+const logout = () => {
+  localStorage.removeItem("token");
+  setCurrentUser(null);
+};
   return (
     <AuthContext.Provider
       value={{
@@ -73,6 +130,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         verifyEmail,
         loading,
         error,
+        login,
+        logout,
       }}
     >
       {children}

@@ -9,6 +9,9 @@ import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
 import Dashboard from "./pages/user/Dashboard"
 import VerifyEmail from "./pages/auth/VerifyEmail"
+import UsersLayout from "./layouts/UsersLayout"
+import ComingSoon from "./components/ComingSoon"
+import UserComingSoon from "./components/UserComingSoon"
 
 function App() {
 
@@ -23,10 +26,18 @@ function App() {
           <Route path="/FAQ" element={<FAQ/>}/>
           <Route path="/live-signals" element={<LiveSignals/>}/>
         </Route>
+        <Route element={<UsersLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/markets" element={<UserComingSoon />} />
+            <Route path="/signals" element={<UserComingSoon />} />
+            <Route path="/portfolio" element={<UserComingSoon />} />
+            <Route path="/wallet" element={<UserComingSoon />} />
+            <Route path="/trade-history" element={<UserComingSoon />} />
+      </Route>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
-        <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/verify-email" element={<VerifyEmail/>}/>
+        <Route path='/coming-soon' element={<ComingSoon/>}/>
    </Routes>
     
     </>

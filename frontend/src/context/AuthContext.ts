@@ -20,6 +20,8 @@ type AuthContextType = {
   verifyEmail: (email: string, code: string) => Promise<void>;
   loading: boolean;
   error: string | null;
+  logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
