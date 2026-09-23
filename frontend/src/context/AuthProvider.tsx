@@ -10,11 +10,12 @@ import {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
+useEffect(() => {
   const getCurrentUser = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
+      setCurrentUser(null);
       return;
     }
 
@@ -23,10 +24,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       setCurrentUser(response.data.user);
     } catch (error) {
+      console.error("Failed to restore user:", error);
+
       localStorage.removeItem("token");
       setCurrentUser(null);
-      console.log(error);
-      
     }
   };
 

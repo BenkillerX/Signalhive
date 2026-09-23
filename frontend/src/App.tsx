@@ -31,6 +31,9 @@ function App() {
             <Route path="/portfolio" element={<UserComingSoon />} />
             <Route path="/wallet" element={<UserComingSoon />} />
             <Route path="/trade-history" element={<UserComingSoon />} />
+            <Route path="/notifications" element={<UserComingSoon />} />
+            <Route path="/settings" element={<UserComingSoon />} />
+            <Route path="/help-support" element={<UserComingSoon />} />
       </Route>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>

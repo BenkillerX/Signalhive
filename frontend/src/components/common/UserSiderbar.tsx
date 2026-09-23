@@ -36,25 +36,23 @@ const UserSidebar = () => {
     icon: History,
     path: "/trade-history",
   },
-];
-
-  const secondaryNavigation = [
-    {
+  {
       label: "Notifications",
       icon: Bell,
-      path: "/coming-soon",
+      path: "/notifications",
     },
     {
       label: "Settings",
       icon: Settings,
-      path: "/coming-soon",
+      path: "/settings",
     },
     {
       label: "Help & Support",
       icon: CircleHelp,
-      path: "/coming-soon",
+      path: "/help-support",
     },
-  ];
+];
+
 
   const handleLogout = () => {
   logout();
@@ -78,9 +76,6 @@ const UserSidebar = () => {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-4 py-6">
-        <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
-          Trading
-        </p>
 
         <div className="space-y-1">
           {navigation.map((item) => {
@@ -97,29 +92,6 @@ const UserSidebar = () => {
               </button>
             );
           })}
-        </div>
-
-        <div className="mt-8">
-          <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Account
-          </p>
-
-          <div className="space-y-1">
-            {secondaryNavigation.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => navigate(item.path)}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
-                >
-                  <Icon size={19} strokeWidth={1.8} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
         </div>
       </nav>
 
