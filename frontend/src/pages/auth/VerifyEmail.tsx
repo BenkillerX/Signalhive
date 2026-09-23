@@ -24,7 +24,7 @@ async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
   try {
     await verifyEmail(email, code);
 
-    navigate("/dashboard");
+    navigate("/live-signals");
   } catch (error) {
     console.error(error);
   }

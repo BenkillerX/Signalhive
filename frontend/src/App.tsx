@@ -4,14 +4,13 @@ import LandingPage from "./components/landing/LandingPage"
 import ExplorePage from "./components/landing/ExplorePage"
 import HowItWorks from "./components/landing/HowItWorks"
 import FAQ from "./components/landing/FAQ"
-import LiveSignals from "./components/landing/LiveSignals"
 import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
-import Dashboard from "./pages/user/Dashboard"
 import VerifyEmail from "./pages/auth/VerifyEmail"
 import UsersLayout from "./layouts/UsersLayout"
 import ComingSoon from "./components/ComingSoon"
 import UserComingSoon from "./components/UserComingSoon"
+import LiveSignals from "./pages/user/LiveSignals"
 
 function App() {
 
@@ -24,12 +23,11 @@ function App() {
           <Route path="/explore" element={<ExplorePage/>}/>
           <Route path="/How-it-works" element={<HowItWorks/>}/>
           <Route path="/FAQ" element={<FAQ/>}/>
-          <Route path="/live-signals" element={<LiveSignals/>}/>
+          {/* <Route path="/live-signals" element={<LiveSignals/>}/> */}
         </Route>
         <Route element={<UsersLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/markets" element={<UserComingSoon />} />
-            <Route path="/signals" element={<UserComingSoon />} />
+            <Route path="/live-signals" element={<LiveSignals />} />
             <Route path="/portfolio" element={<UserComingSoon />} />
             <Route path="/wallet" element={<UserComingSoon />} />
             <Route path="/trade-history" element={<UserComingSoon />} />

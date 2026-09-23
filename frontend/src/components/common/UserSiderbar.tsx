@@ -1,8 +1,6 @@
 import {
-  LayoutDashboard,
   ChartCandlestick,
   Signal,
-  BriefcaseBusiness,
   Wallet,
   History,
   Bell,
@@ -19,24 +17,14 @@ const UserSidebar = () => {
 
   const navigation = [
   {
-    label: "Home",
-    icon: LayoutDashboard,
-    path: "/dashboard",
+    label: "Trading Signals",
+    icon: Signal,
+    path: "/live-signals",
   },
   {
     label: "Markets",
     icon: ChartCandlestick,
     path: "/markets",
-  },
-  {
-    label: "Trading Signals",
-    icon: Signal,
-    path: "/signals",
-  },
-  {
-    label: "Portfolio",
-    icon: BriefcaseBusiness,
-    path: "/portfolio",
   },
   {
     label: "Wallet",

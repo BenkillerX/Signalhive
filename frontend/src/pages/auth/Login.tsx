@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       await login(formData.email, formData.password);
-      navigate('/dashboard')
+      navigate('/live-signals')
     } catch (error) {
       console.error(error);
     }
