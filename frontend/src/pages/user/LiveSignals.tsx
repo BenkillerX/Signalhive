@@ -37,17 +37,13 @@ const LiveSignals = () => {
 const [markets, setMarkets] = useState(initialMarkets)
 useEffect(() => {
   const socket = new WebSocket(
-  `${import.meta.env.VITE_WS_URL}/ws/markets`
-);
+    `${import.meta.env.VITE_WS_URL}/ws/markets`
+  );
 
-  socket.onopen = () => {
-    console.log("Connected to SignalHive market WebSocket");
-  };
+  socket.onopen = () => {};
 
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
-
-    console.log("Received:", message);
 
     if (message.type === "market_snapshot") {
       setMarkets((currentMarkets) =>
@@ -70,11 +66,6 @@ useEffect(() => {
     if (message.type === "market_update") {
       const updatedMarket = message.data;
 
-      console.log(
-        `Updating ${updatedMarket.symbol}:`,
-        updatedMarket.price
-      );
-
       setMarkets((currentMarkets) =>
         currentMarkets.map((market) =>
           market.symbol === updatedMarket.symbol
@@ -88,18 +79,9 @@ useEffect(() => {
     }
   };
 
-socket.onerror = (event) => {
-  console.error("Market WebSocket error:", event);
-  console.error("WebSocket readyState:", socket.readyState);
-  console.error("WebSocket URL:", socket.url);
-};
+  socket.onerror = () => {};
 
-  socket.onclose = (event) => {
-  console.error("Market WebSocket disconnected");
-  console.error("Close code:", event.code);
-  console.error("Close reason:", event.reason);
-  console.error("Was clean:", event.wasClean);
-};
+  socket.onclose = () => {};
 
   return () => {
     socket.close();
