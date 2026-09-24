@@ -11,6 +11,7 @@ const symbols = [
 ];
 
 let marketSocket = null;
+let reconnectTimer = null;
 
 const latestMarkets = {};
 
@@ -19,72 +20,86 @@ export const connectToMarketData = (wss) => {
     throw new Error("TWELVE_DATA_API_KEY is not defined");
   }
 
-  marketSocket = new WebSocket(TWELVE_DATA_WS_URL);
+  const connect = () => {
+    console.log("Connecting to Twelve Data...");
 
-  marketSocket.on("open", () => {
-    console.log("Connected to Twelve Data");
+    marketSocket = new WebSocket(TWELVE_DATA_WS_URL);
 
-    marketSocket.send(
-      JSON.stringify({
-        action: "subscribe",
-        params: {
-          symbols: symbols.join(","),
-        },
-      })
-    );
+    marketSocket.on("open", () => {
+      console.log("Connected to Twelve Data");
 
-    console.log(`Subscribed to: ${symbols.join(", ")}`);
-  });
+      marketSocket.send(
+        JSON.stringify({
+          action: "subscribe",
+          params: {
+            symbols: symbols.join(","),
+          },
+        })
+      );
 
-  marketSocket.on("message", (data) => {
-    try {
-      const message = JSON.parse(data.toString());
+      console.log(`Subscribed to: ${symbols.join(", ")}`);
+    });
 
-      console.log("Twelve Data message:", message);
+    marketSocket.on("message", (data) => {
+      try {
+        const message = JSON.parse(data.toString());
 
-      if (message.event === "subscribe-status") {
-        console.log(
-          "Subscription status:",
-          JSON.stringify(message, null, 2)
-        );
-        return;
+        console.log("Twelve Data message:", message);
+
+        if (message.event === "subscribe-status") {
+          console.log(
+            "Subscription status:",
+            JSON.stringify(message, null, 2)
+          );
+          return;
+        }
+
+        if (message.event === "price") {
+          const market = {
+            symbol: message.symbol,
+            price: Number(message.price),
+            timestamp: message.timestamp,
+          };
+
+          latestMarkets[message.symbol] = market;
+
+          console.log("Market update:", market);
+
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "market_update",
+                  data: market,
+                })
+              );
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Failed to process market data:", error);
       }
+    });
 
-      if (message.event === "price") {
-        const market = {
-          symbol: message.symbol,
-          price: Number(message.price),
-          timestamp: message.timestamp,
-        };
+    marketSocket.on("error", (error) => {
+      console.error("Twelve Data WebSocket error:", error);
+    });
 
-        latestMarkets[message.symbol] = market;
+    marketSocket.on("close", () => {
+      console.log("Twelve Data WebSocket disconnected");
 
-        console.log("Market update:", market);
+      marketSocket = null;
 
-        wss.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(
-              JSON.stringify({
-                type: "market_update",
-                data: market,
-              })
-            );
-          }
-        });
+      if (!reconnectTimer) {
+        reconnectTimer = setTimeout(() => {
+          reconnectTimer = null;
+          connect();
+        }, 5000);
       }
-    } catch (error) {
-      console.error("Failed to process market data:", error);
-    }
-  });
+    });
+  };
 
-  marketSocket.on("error", (error) => {
-    console.error("Twelve Data WebSocket error:", error);
-  });
-
-  marketSocket.on("close", () => {
-    console.log("Twelve Data WebSocket disconnected");
-    marketSocket = null;
-  });
+  connect();
 };
 
 export const getLatestMarkets = () => {

@@ -88,13 +88,18 @@ useEffect(() => {
     }
   };
 
-  socket.onerror = (error) => {
-    console.error("Market WebSocket error:", error);
-  };
+socket.onerror = (event) => {
+  console.error("Market WebSocket error:", event);
+  console.error("WebSocket readyState:", socket.readyState);
+  console.error("WebSocket URL:", socket.url);
+};
 
-  socket.onclose = () => {
-    console.log("Market WebSocket disconnected");
-  };
+  socket.onclose = (event) => {
+  console.error("Market WebSocket disconnected");
+  console.error("Close code:", event.code);
+  console.error("Close reason:", event.reason);
+  console.error("Was clean:", event.wasClean);
+};
 
   return () => {
     socket.close();
