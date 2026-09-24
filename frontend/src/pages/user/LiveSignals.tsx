@@ -2,14 +2,104 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   Clock3,
-  TrendingDown,
-  TrendingUp,
-  Activity,
+  // TrendingDown,
+  // TrendingUp,
   CircleDollarSign,
   AlertCircle,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
+// type Market = {
+//   symbol: string;
+//   price: number;
+//   timestamp: number;
+// };
+const initialMarkets = [
+  {
+    symbol: "EUR/USD",
+    price: 0,
+  },
+  {
+    symbol: "GBP/USD",
+    price: 0,
+  },
+  {
+    symbol: "USD/JPY",
+    price: 0,
+  },
+  {
+    symbol: "XAU/USD",
+    price: 0,
+  },
+];
 const LiveSignals = () => {
+  
+const [markets, setMarkets] = useState(initialMarkets)
+useEffect(() => {
+  const socket = new WebSocket(
+  `${import.meta.env.VITE_WS_URL}/ws/markets`
+);
+
+  socket.onopen = () => {
+    console.log("Connected to SignalHive market WebSocket");
+  };
+
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+
+    console.log("Received:", message);
+
+    if (message.type === "market_snapshot") {
+      setMarkets((currentMarkets) =>
+        currentMarkets.map((market) => {
+          const liveMarket = message.data.find(
+            (item: { symbol: string; price: number }) =>
+              item.symbol === market.symbol
+          );
+
+          return liveMarket
+            ? {
+                ...market,
+                price: liveMarket.price,
+              }
+            : market;
+        })
+      );
+    }
+
+    if (message.type === "market_update") {
+      const updatedMarket = message.data;
+
+      console.log(
+        `Updating ${updatedMarket.symbol}:`,
+        updatedMarket.price
+      );
+
+      setMarkets((currentMarkets) =>
+        currentMarkets.map((market) =>
+          market.symbol === updatedMarket.symbol
+            ? {
+                ...market,
+                price: updatedMarket.price,
+              }
+            : market
+        )
+      );
+    }
+  };
+
+  socket.onerror = (error) => {
+    console.error("Market WebSocket error:", error);
+  };
+
+  socket.onclose = () => {
+    console.log("Market WebSocket disconnected");
+  };
+
+  return () => {
+    socket.close();
+  };
+}, []);
   const signals = [
     {
       pair: "EUR/USD",
@@ -53,38 +143,6 @@ const LiveSignals = () => {
     },
   ];
 
-  const markets = [
-    {
-      pair: "EUR/USD",
-      price: "1.14141",
-      change: "-0.16%",
-      direction: "down",
-    },
-    {
-      pair: "GBP/USD",
-      price: "1.33185",
-      change: "-0.19%",
-      direction: "down",
-    },
-    {
-      pair: "USD/JPY",
-      price: "157.55",
-      change: "+0.05%",
-      direction: "up",
-    },
-    {
-      pair: "EUR/GBP",
-      price: "0.85813",
-      change: "+0.02%",
-      direction: "up",
-    },
-    {
-      pair: "XAU/USD",
-      price: "4,335.23",
-      change: "-0.76%",
-      direction: "down",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-6 md:px-6 lg:px-8">
@@ -107,20 +165,6 @@ const LiveSignals = () => {
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
                 Live Signals
               </h1>
-
-              <p className="mt-1 max-w-2xl text-sm text-slate-500">
-                Real-time trading signals posted by the SignalHive team.
-                Check the posting time before entering any trade.
-              </p>
-            </div>
-
-            {/* Last Updated */}
-            <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">
-              <Activity size={15} className="text-emerald-500" />
-
-              <span>
-                Market data updated <strong className="text-slate-700">now</strong>
-              </span>
             </div>
           </div>
         </div>
@@ -145,50 +189,26 @@ const LiveSignals = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {markets.map((market) => {
-              const isUp = market.direction === "up";
+       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+  {markets.map((market) => (
+    <div
+      key={market.symbol}
+      className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+    >
+      <span className="text-xs font-semibold text-slate-500">
+        {market.symbol}
+      </span>
 
-              return (
-                <div
-                  key={market.pair}
-                  className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-500">
-                      {market.pair}
-                    </span>
+      <p className="mt-3 text-lg font-bold tracking-tight text-slate-900">
+        {market.price}
+      </p>
 
-                    <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-                        isUp
-                          ? "bg-emerald-50 text-emerald-600"
-                          : "bg-red-50 text-red-500"
-                      }`}
-                    >
-                      {isUp ? (
-                        <TrendingUp size={15} />
-                      ) : (
-                        <TrendingDown size={15} />
-                      )}
-                    </div>
-                  </div>
-
-                  <p className="text-lg font-bold tracking-tight text-slate-900">
-                    {market.price}
-                  </p>
-
-                  <p
-                    className={`mt-1 text-xs font-semibold ${
-                      isUp ? "text-emerald-600" : "text-red-500"
-                    }`}
-                  >
-                    {market.change}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+      <p className="mt-1 text-xs text-emerald-600">
+        Live
+      </p>
+    </div>
+  ))}
+</div>
         </section>
 
         {/* =========================
