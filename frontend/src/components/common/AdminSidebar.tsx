@@ -5,19 +5,21 @@ import {
   ChartCandlestick,
   Wallet,
   Settings,
+  LogOut,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const navigation = [
   {
     label: "Dashboard",
     icon: LayoutDashboard,
-    path: "/admin/dashboard",
+    path: "/admin",
   },
   {
     label: "Signals",
     icon: Signal,
-    path: "/coming-soon",
+    path: "/add-signal",
   },
   {
     label: "Users",
@@ -42,6 +44,13 @@ const navigation = [
 ];
 
 const AdminSidebar = () => {
+    const { logout } = useAuth();
+    const navigate = useNavigate()
+    const handleLogout = ()=>{
+      logout()
+      navigate('/login')
+    }
+
   return (
     <aside className="fixed left-0 top-0 z-50 hidden h-screen w-64 border-r border-zinc-800 bg-zinc-950 text-white lg:flex lg:flex-col">
       {/* Logo */}
@@ -76,14 +85,25 @@ const AdminSidebar = () => {
       </nav>
 
       {/* Admin info */}
-      <div className="border-t border-zinc-800 p-4">
-        <div className="rounded-lg bg-zinc-900 p-3">
-          <p className="text-sm font-medium text-white">Administrator</p>
-          <p className="mt-1 text-xs text-zinc-500">
-            SignalHive Admin
-          </p>
-        </div>
-      </div>
+      {/* Admin info */}
+<div className="border-t border-zinc-800 p-4">
+  <div className="rounded-lg bg-zinc-900 p-3">
+    <p className="text-sm font-medium text-white">Administrator</p>
+
+    <p className="mt-1 text-xs text-zinc-500">
+      SignalHive Admin
+    </p>
+
+    <button
+      type="button"
+      onClick={handleLogout}
+      className="mt-4 flex w-full items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium text-zinc-400 transition hover:bg-red-500/10 hover:text-red-400"
+    >
+      <LogOut size={18} />
+      <span>Logout</span>
+    </button>
+  </div>
+</div>
     </aside>
   );
 };

@@ -13,41 +13,50 @@ import UserComingSoon from "./components/UserComingSoon"
 import LiveSignals from "./pages/user/LiveSignals"
 import AdminLayouts from "./layouts/AdminLayouts"
 import AdminDashboard from "./pages/admin/AdminDashboard"
+import AddSignal from "./pages/admin/AddSignal"
+import { Toaster } from "react-hot-toast";
 
 function App() {
-
   return (
     <>
-   <Routes>
-       {/* Public Pages Routes */}
-        <Route element={<PublicLayout/>}>
-          <Route path="/" element={<LandingPage/>}/>
-          <Route path="/explore" element={<ExplorePage/>}/>
-          <Route path="/How-it-works" element={<HowItWorks/>}/>
-          <Route path="/FAQ" element={<FAQ/>}/>
-          {/* <Route path="/live-signals" element={<LiveSignals/>}/> */}
+      <Toaster position="top-right" />
+
+      <Routes>
+        {/* Public Pages Routes */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/How-it-works" element={<HowItWorks />} />
+          <Route path="/FAQ" element={<FAQ />} />
         </Route>
+
+        {/* User Routes */}
         <Route element={<UsersLayout />}>
-            <Route path="/markets" element={<UserComingSoon />} />
-            <Route path="/live-signals" element={<LiveSignals />} />
-            <Route path="/portfolio" element={<UserComingSoon />} />
-            <Route path="/wallet" element={<UserComingSoon />} />
-            <Route path="/trade-history" element={<UserComingSoon />} />
-            <Route path="/notifications" element={<UserComingSoon />} />
-            <Route path="/settings" element={<UserComingSoon />} />
-            <Route path="/help-support" element={<UserComingSoon />} />
-      </Route>
-      <Route element={<AdminLayouts/>}>
-        <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
-      </Route>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/register" element={<Register/>}/>
-        <Route path="/verify-email" element={<VerifyEmail/>}/>
-        <Route path='/coming-soon' element={<ComingSoon/>}/>
-   </Routes>
-    
+          <Route path="/markets" element={<UserComingSoon />} />
+          <Route path="/live-signals" element={<LiveSignals />} />
+          <Route path="/portfolio" element={<UserComingSoon />} />
+          <Route path="/wallet" element={<UserComingSoon />} />
+          <Route path="/trade-history" element={<UserComingSoon />} />
+          <Route path="/notifications" element={<UserComingSoon />} />
+          <Route path="/settings" element={<UserComingSoon />} />
+          <Route path="/help-support" element={<UserComingSoon />} />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<AdminLayouts />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/add-signal" element={<AddSignal />} />
+        </Route>
+
+        {/* Auth Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+
+        <Route path="/coming-soon" element={<ComingSoon />} />
+      </Routes>
     </>
-  )
+  );
 }
 
 export default App

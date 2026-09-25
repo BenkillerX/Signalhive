@@ -5,8 +5,8 @@ export type User = {
   firstname: string;
   lastname: string;
   email: string;
+  role: "user" | "admin";
 };
-
 export type RegisterData = {
   firstname: string;
   lastname: string;
@@ -21,7 +21,7 @@ type AuthContextType = {
   loading: boolean;
   error: string | null;
   logout: () => void;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(

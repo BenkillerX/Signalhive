@@ -22,16 +22,24 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    try {
-      await login(formData.email, formData.password);
-      navigate('/live-signals')
-    } catch (error) {
-      console.error(error);
+  try {
+    const user = await login(
+      formData.email,
+      formData.password
+    );
+
+    if (user.role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/live-signals");
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div className="flex min-h-screen bg-slate-50">

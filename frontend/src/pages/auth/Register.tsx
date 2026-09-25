@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const { register, loading, error } = useAuth();
@@ -11,12 +13,13 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [terms, setTerms] = useState(false);
   const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false);
  async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
 
   e.preventDefault();
 
   if (!terms) {
-    alert('You must chext all terms and conditions')
+    toast.error('You must chext all terms and conditions')
     return;
   }
 
@@ -117,26 +120,37 @@ const Register = () => {
 
               {/* Password */}
               <div>
-                <label
-                  htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-slate-300"
-                >
-                  Password
-                </label>
+          <label
+            htmlFor="password"
+            className="mb-2 block text-sm font-medium text-slate-300"
+          >
+            Password
+          </label>
 
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a password"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20"
-                />
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Create a password"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 pr-12 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-slate-500 focus:ring-2 focus:ring-slate-500/20"
+            />
 
-                <p className="mt-2 text-xs text-slate-500">
-                  Use at least 8 characters.
-                </p>
-              </div>
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-300"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+
+          <p className="mt-2 text-xs text-slate-500">
+            Use at least 8 characters.
+          </p>
+        </div>
 
               {/* Terms */}
               <div className="flex items-start gap-3">

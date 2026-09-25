@@ -141,13 +141,13 @@ useEffect(() => {
         <div className="mb-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="mb-2 flex items-center gap-2">
+              {/* <div className="mb-2 flex items-center gap-2">
                 <span className="flex h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-500" />
 
                 <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600">
                   Market Live
                 </span>
-              </div>
+              </div> */}
 
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
                 Live Signals
