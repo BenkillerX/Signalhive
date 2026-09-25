@@ -1,5 +1,5 @@
-import Signal from "../../models/Signal";
-import USER from "../../models/User";
+import Signal from "../../models/Signal.js";
+import USER from "../../models/User.js";
 
 export const getAdminStats = async (req, res) => {
   try {
