@@ -97,12 +97,12 @@ useEffect(() => {
   };
 }, []);
 
-  useEffect(() => {
+useEffect(() => {
   const fetchSignals = async () => {
     try {
-      const response = await api.get("/api/signal/");
+      const response = await api.get("/api/signal");
 
-      setSignals(response.data);
+      setSignals(response.data.signals);
     } catch (error) {
       console.error("Failed to fetch signals:", error);
     }
