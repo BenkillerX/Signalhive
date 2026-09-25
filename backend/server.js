@@ -12,7 +12,7 @@ import {
   getLatestMarkets,
 } from "./src/services/marketService.js";
 import signalRoutes from "./src/modules/signal/signal.routes.js";
-import adminStats from "./src/modules/stats/stats.routes.js";
+import adminRoutes from "./src/modules/admin/admin.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,7 +23,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/markets", marketRoutes);
 app.use("/api/signal", signalRoutes);
-app.use('/api/stats', adminStats)
+app.use('/api/admin', adminRoutes)
 app.get("/", (req, res) => {
   res.json({
     message: "SignalHive API is running",
