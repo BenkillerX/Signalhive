@@ -1,7 +1,67 @@
+import {
+  LayoutDashboard,
+  Signal,
+  Users,
+  Wallet,
+  Settings,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
+
+const navigation = [
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    path: "/admin",
+  },
+  {
+    label: "Signals",
+    icon: Signal,
+    path: "/add-signal",
+  },
+  {
+    label: "Users",
+    icon: Users,
+    path: "/admin-users",
+  },
+  {
+    label: "Transactions",
+    icon: Wallet,
+    path: "/admin-transactions",
+  },
+  {
+    label: "Settings",
+    icon: Settings,
+    path: "/admin-settings",
+  },
+];
+
 const AdminBottomNav = () => {
   return (
-    <div>AdminBottomNav</div>
-  )
-}
+    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-zinc-800 bg-zinc-950 lg:hidden">
+      <div className="flex h-16 items-center justify-around">
+        {navigation.map((item) => {
+          const Icon = item.icon;
 
-export default AdminBottomNav
+          return (
+            <NavLink
+              key={item.label}
+              to={item.path}
+              className={({ isActive }) =>
+                `flex h-full flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition ${
+                  isActive
+                    ? "text-emerald-400"
+                    : "text-zinc-500 hover:text-zinc-300"
+                }`
+              }
+            >
+              <Icon size={19} />
+              <span>{item.label}</span>
+            </NavLink>
+          );
+        })}
+      </div>
+    </nav>
+  );
+};
+
+export default AdminBottomNav;

@@ -1,4 +1,5 @@
 import Signal from "../../models/Signal.js";
+import USER from "../../models/User.js";
 
 export const createSignal = async (req, res) => {
   try {
@@ -48,21 +49,19 @@ export const createSignal = async (req, res) => {
     });
   }
 };
-export const getAdminStats = async (req, res) => {
+export const getSignals = async (req, res) => {
   try {
-    const users = await User.countDocuments();
-
-    const activeSignals = await Signal.countDocuments({
-      status: "ACTIVE",
-    });
+    const signals = await Signal.find()
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
-      users,
-      activeSignals,
+      signals,
     });
   } catch (error) {
+    console.error("Get signals error:", error);
+
     res.status(500).json({
-      message: "Failed to fetch admin statistics",
+      message: "Failed to fetch signals",
     });
   }
 };

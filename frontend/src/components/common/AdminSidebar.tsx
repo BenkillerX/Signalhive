@@ -2,7 +2,6 @@ import {
   LayoutDashboard,
   Signal,
   Users,
-  ChartCandlestick,
   Wallet,
   Settings,
   LogOut,
@@ -24,22 +23,17 @@ const navigation = [
   {
     label: "Users",
     icon: Users,
-    path: "/coming-soon",
-  },
-  {
-    label: "Markets",
-    icon: ChartCandlestick,
-    path: "/coming-soon",
+    path: "/admin-users",
   },
   {
     label: "Transactions",
     icon: Wallet,
-    path: "/coming-soon",
+    path: "/admin-transactions",
   },
   {
     label: "Settings",
     icon: Settings,
-    path: "/coming-soon",
+    path: "/admin-settings",
   },
 ];
 
@@ -56,7 +50,7 @@ const AdminSidebar = () => {
       {/* Logo */}
       <div className="flex h-20 items-center justify-center border-b border-zinc-800">
         <h1 className="text-xl font-bold">
-          Signal<span className="text-emerald-400">Hive</span>
+          SignalHive
         </h1>
       </div>
 

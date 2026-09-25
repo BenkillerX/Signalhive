@@ -46,6 +46,9 @@ function App() {
         <Route element={<AdminLayouts />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/add-signal" element={<AddSignal />} />
+          <Route path="/admin-users" element={<UserComingSoon />} />
+          <Route path="/admin-transactions" element={<UserComingSoon />} />
+          <Route path="/admin-settings" element={<UserComingSoon />} />
         </Route>
 
         {/* Auth Routes */}

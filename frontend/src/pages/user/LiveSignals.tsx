@@ -8,12 +8,20 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import api from "../../services/api";
 
-// type Market = {
-//   symbol: string;
-//   price: number;
-//   timestamp: number;
-// };
+type Signal = {
+  _id: string;
+  pair: string;
+  direction: "BUY" | "SELL";
+  entryPrice: number;
+  stopLoss: number;
+  takeProfit: number;
+  timeframe: string;
+  analysis?: string;
+  status: "ACTIVE" | "HIT_TP" | "HIT_SL" | "CLOSED";
+  createdAt: string;
+};
 const initialMarkets = [
   {
     symbol: "EUR/USD",
@@ -35,6 +43,7 @@ const initialMarkets = [
 const LiveSignals = () => {
   
 const [markets, setMarkets] = useState(initialMarkets)
+const [signals, setSignals] = useState<Signal[]>([]);
 useEffect(() => {
   const socket = new WebSocket(
     `${import.meta.env.VITE_WS_URL}/ws/markets`
@@ -87,48 +96,20 @@ useEffect(() => {
     socket.close();
   };
 }, []);
-  const signals = [
-    {
-      pair: "EUR/USD",
-      type: "SELL",
-      entry: "1.14250",
-      stopLoss: "1.14500",
-      takeProfit: "1.13750",
-      posted: "5m ago",
-      status: "ACTIVE",
-      confidence: "High",
-    },
-    {
-      pair: "GBP/USD",
-      type: "SELL",
-      entry: "1.33200",
-      stopLoss: "1.33500",
-      takeProfit: "1.32600",
-      posted: "12m ago",
-      status: "ACTIVE",
-      confidence: "Medium",
-    },
-    {
-      pair: "USD/JPY",
-      type: "BUY",
-      entry: "157.480",
-      stopLoss: "157.150",
-      takeProfit: "158.100",
-      posted: "18m ago",
-      status: "ACTIVE",
-      confidence: "High",
-    },
-    {
-      pair: "XAU/USD",
-      type: "SELL",
-      entry: "4335.00",
-      stopLoss: "4355.00",
-      takeProfit: "4295.00",
-      posted: "31m ago",
-      status: "ACTIVE",
-      confidence: "Medium",
-    },
-  ];
+
+  useEffect(() => {
+  const fetchSignals = async () => {
+    try {
+      const response = await api.get("/api/signal/");
+
+      setSignals(response.data);
+    } catch (error) {
+      console.error("Failed to fetch signals:", error);
+    }
+  };
+
+  fetchSignals();
+}, []);
 
 
   return (
@@ -223,127 +204,128 @@ useEffect(() => {
               </span>
             </div>
 
-            <div className="space-y-3">
-              {signals.map((signal) => {
-                const isBuy = signal.type === "BUY";
+           <div className="space-y-3">
+  {signals.map((signal) => {
+    const isBuy = signal.direction === "BUY";
 
-                return (
-                  <div
-                    key={`${signal.pair}-${signal.posted}`}
-                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+    return (
+      <div
+        key={signal._id}
+        className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      >
+        {/* Signal Header */}
+        <div className="flex flex-col gap-4 p-4 sm:p-5">
+          <div className="flex items-start justify-between gap-3">
+
+            {/* Pair */}
+            <div className="flex items-center gap-3">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                  isBuy
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "bg-red-50 text-red-500"
+                }`}
+              >
+                {isBuy ? (
+                  <ArrowUpRight size={21} />
+                ) : (
+                  <ArrowDownRight size={21} />
+                )}
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-slate-900">
+                    {signal.pair}
+                  </h3>
+
+                  <span
+                    className={`rounded-md px-2 py-0.5 text-[10px] font-bold ${
+                      isBuy
+                        ? "bg-emerald-50 text-emerald-600"
+                        : "bg-red-50 text-red-500"
+                    }`}
                   >
-                    {/* Signal Header */}
-                    <div className="flex flex-col gap-4 p-4 sm:p-5">
-                      <div className="flex items-start justify-between gap-3">
+                    {signal.direction}
+                  </span>
+                </div>
 
-                        {/* Pair */}
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                              isBuy
-                                ? "bg-emerald-50 text-emerald-600"
-                                : "bg-red-50 text-red-500"
-                            }`}
-                          >
-                            {isBuy ? (
-                              <ArrowUpRight size={21} />
-                            ) : (
-                              <ArrowDownRight size={21} />
-                            )}
-                          </div>
+                <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
+                  <Clock3 size={13} />
 
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-bold text-slate-900">
-                                {signal.pair}
-                              </h3>
-
-                              <span
-                                className={`rounded-md px-2 py-0.5 text-[10px] font-bold ${
-                                  isBuy
-                                    ? "bg-emerald-50 text-emerald-600"
-                                    : "bg-red-50 text-red-500"
-                                }`}
-                              >
-                                {signal.type}
-                              </span>
-                            </div>
-
-                            <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
-                              <Clock3 size={13} />
-
-                              <span>
-                                Uploaded {signal.posted}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Status */}
-                        <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-600">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                          {signal.status}
-                        </span>
-                      </div>
-
-                      {/* Signal Details */}
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="rounded-lg bg-slate-50 p-3">
-                          <p className="text-[10px] uppercase tracking-wide text-slate-400">
-                            Entry
-                          </p>
-
-                          <p className="mt-1 text-sm font-semibold text-slate-900">
-                            {signal.entry}
-                          </p>
-                        </div>
-
-                        <div className="rounded-lg bg-red-50 p-3">
-                          <p className="text-[10px] uppercase tracking-wide text-red-400">
-                            Stop Loss
-                          </p>
-
-                          <p className="mt-1 text-sm font-semibold text-red-600">
-                            {signal.stopLoss}
-                          </p>
-                        </div>
-
-                        <div className="rounded-lg bg-emerald-50 p-3">
-                          <p className="text-[10px] uppercase tracking-wide text-emerald-500">
-                            Take Profit
-                          </p>
-
-                          <p className="mt-1 text-sm font-semibold text-emerald-600">
-                            {signal.takeProfit}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Footer */}
-                      <div className="flex flex-col gap-2 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-400">
-                            Confidence:
-                          </span>
-
-                          <span className="text-xs font-semibold text-slate-700">
-                            {signal.confidence}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2 text-[11px] text-amber-600">
-                          <AlertCircle size={13} />
-
-                          <span>
-                            Check price before entering
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  <span>
+                    Uploaded{" "}
+                    {new Date(signal.createdAt).toLocaleString()}
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {/* Status */}
+            <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              {signal.status}
+            </span>
+          </div>
+
+          {/* Signal Details */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-lg bg-slate-50 p-3">
+              <p className="text-[10px] uppercase tracking-wide text-slate-400">
+                Entry
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {signal.entryPrice}
+              </p>
+            </div>
+
+            <div className="rounded-lg bg-red-50 p-3">
+              <p className="text-[10px] uppercase tracking-wide text-red-400">
+                Stop Loss
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-red-600">
+                {signal.stopLoss}
+              </p>
+            </div>
+
+            <div className="rounded-lg bg-emerald-50 p-3">
+              <p className="text-[10px] uppercase tracking-wide text-emerald-500">
+                Take Profit
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-emerald-600">
+                {signal.takeProfit}
+              </p>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex flex-col gap-2 border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400">
+                Timeframe:
+              </span>
+
+              <span className="text-xs font-semibold text-slate-700">
+                {signal.timeframe}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 text-[11px] text-amber-600">
+              <AlertCircle size={13} />
+
+              <span>
+                Check price before entering
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
           </section>
 
           {/* =========================
