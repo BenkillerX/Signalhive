@@ -11,15 +11,17 @@ import {
   connectToMarketData,
   getLatestMarkets,
 } from "./src/services/marketService.js";
+import signalRoutes from "./src/modules/signal/signal.routes.js";
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/markets", marketRoutes);
+app.use("/api/signal", signalRoutes);
 
 app.get("/", (req, res) => {
   res.json({
@@ -57,16 +59,25 @@ wss.on("connection", (socket) => {
   });
 });
 
-// Connect backend to Twelve Data
-connectToMarketData(wss);
+const startServer = async () => {
+  try {
+    await connectDB();
 
-// Connect database and start server
-connectDB()
-  .then(() => {
+    console.log("Mongodb connected successfully");
+
     server.listen(PORT, () => {
       console.log(`Server running on ${PORT}`);
+
+      connectToMarketData(wss);
     });
-  })
-  .catch((error) => {
-    console.error("An error occurred on the server:", error);
-  });
+  } catch (error) {
+    console.error(
+      "An error occurred while starting the server:",
+      error
+    );
+
+    process.exit(1);
+  }
+};
+
+startServer();

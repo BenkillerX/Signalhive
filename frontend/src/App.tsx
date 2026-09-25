@@ -11,6 +11,8 @@ import UsersLayout from "./layouts/UsersLayout"
 import ComingSoon from "./components/ComingSoon"
 import UserComingSoon from "./components/UserComingSoon"
 import LiveSignals from "./pages/user/LiveSignals"
+import AdminLayouts from "./layouts/AdminLayouts"
+import AdminDashboard from "./pages/admin/AdminDashboard"
 
 function App() {
 
@@ -34,6 +36,9 @@ function App() {
             <Route path="/notifications" element={<UserComingSoon />} />
             <Route path="/settings" element={<UserComingSoon />} />
             <Route path="/help-support" element={<UserComingSoon />} />
+      </Route>
+      <Route element={<AdminLayouts/>}>
+        <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
       </Route>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
