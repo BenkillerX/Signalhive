@@ -4,7 +4,7 @@ import { authenticateToken, authorizeRoles } from '../../middleware/auth.middlew
 
 const signalRoutes = Router();
 signalRoutes.post('/',authenticateToken,authorizeRoles('admin'),createSignal)
-signalRoutes.get('/',authenticateToken,authorizeRoles('admin'),getSignals)
+signalRoutes.get('/',authenticateToken,getSignals)
 
 
 export default signalRoutes;
